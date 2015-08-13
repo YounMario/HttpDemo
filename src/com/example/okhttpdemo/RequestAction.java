@@ -1,7 +1,10 @@
-package com.younchen.utils.http;
+package com.example.okhttpdemo;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.younchen.utils.http.HttpUtil;
+import com.younchen.utils.http.JsonParser;
 
 
 public class RequestAction {
@@ -30,11 +33,19 @@ public class RequestAction {
 	public void UserLogin(String userId,String psw){
 		String url = "http://younchen.eatuo.com:10006/quangui/user/checkLogin";
 		HashMap<String, String> params = new HashMap<String, String>();
-		params.put("phone", "13167390434");
-		params.put("pwd", "123456");
-		putToken("aaaaaaaaaaddddddcccii");
-		String str = HttpUtil.doPost(url, params, defaultHeader);
-		System.out.println(str);
+		params.put("phone",userId);
+		params.put("pwd", psw);
+		String json= HttpUtil.doPost(url, params, defaultHeader);
+
+		LoginResult result=JsonParser.parse(json, LoginResult.class);
+		if(result.getCode()==0){
+			String token=result.getData().getToken();
+			putToken(token);
+		}
+	}
+	
+	public void UploadForum(){
+		
 	}
 	
 	

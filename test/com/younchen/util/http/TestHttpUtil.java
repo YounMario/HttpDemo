@@ -4,8 +4,8 @@ import java.util.HashMap;
 
 import android.test.AndroidTestCase;
 
+import com.example.okhttpdemo.RequestAction;
 import com.younchen.utils.http.HttpUtil;
-import com.younchen.utils.http.RequestAction;
 
 public class TestHttpUtil extends AndroidTestCase {
 
