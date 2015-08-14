@@ -14,12 +14,30 @@ import com.squareup.okhttp.Response;
 
 /**
  * see also https://github.com/square/okhttp/wiki/Recipes
+ * 
  * @author longquan
  *
  */
 public class HttpUtil {
 
 	private final static OkHttpClient client = new OkHttpClient();
+
+	 
+
+	public static void request(String url, Map<String, String> params,
+			Map<String, String> header, List<FileDiscription> flist,
+			Callback callBack, String method) {
+		if (method.equals("POST")) {
+			if (flist.size() > 0) {
+				uploadMultiFile(url, params, flist, header, callBack);
+			} else {
+				post(url, params, header, callBack);
+			}
+
+		} else if (method.equals("GET")) {
+			get(url, params, header, callBack);
+		}
+	}
 
 	/**
 	 * get 请求
@@ -80,23 +98,14 @@ public class HttpUtil {
 	 *            头部
 	 * @return
 	 */
-	public static String doPost(String url, Map<String, String> params,
-			Map<String, String> header) {
+	public static void post(String url, Map<String, String> params,
+			Map<String, String> header, Callback callBack) {
 		Request.Builder requestBuilder = new Request.Builder();
 		bindPostRequestPrams(requestBuilder, params);
 		bindHeader(requestBuilder, header);
 		Request request = requestBuilder.url(url).build();
-		Response response = null;
-		try {
-			response = client.newCall(request).execute();
-			if (response.isSuccessful()) {
-				return response.body().string();
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+		client.newCall(request).enqueue(callBack);
+
 	}
 
 	/**
@@ -108,8 +117,9 @@ public class HttpUtil {
 	 * @param header
 	 * @return
 	 */
-	public static String upLoad(String url, Map<String, String> params, 
-			FileDiscription discription, Map<String, String> header) {
+	public static void upLoad(String url, Map<String, String> params,
+			FileDiscription discription, Map<String, String> header,
+			Callback callBack) {
 		Request.Builder requestBuilder = new Request.Builder();
 		MultipartBuilder multipartBuilder = new MultipartBuilder();
 		multipartBuilder.type(MultipartBuilder.FORM);
@@ -118,16 +128,8 @@ public class HttpUtil {
 		bindFilePart(multipartBuilder, discription);
 		Request request = requestBuilder.url(url)
 				.post(multipartBuilder.build()).build();
-		Response response = null;
-		try {
-			response = client.newCall(request).execute();
-			if (response.isSuccessful()) {
-				return response.body().string();
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		return null;
+		client.newCall(request).enqueue(callBack);
+
 	}
 
 	/**
@@ -139,9 +141,9 @@ public class HttpUtil {
 	 * @param header
 	 * @return
 	 */
-	public static String uploadMultiFile(String url,
-			Map<String, String> params, List<FileDiscription> discriptions,
-			Map<String, String> header) {
+	public static void uploadMultiFile(String url, Map<String, String> params,
+			List<FileDiscription> discriptions, Map<String, String> header,
+			Callback callBack) {
 		Request.Builder requestBuilder = new Request.Builder();
 		MultipartBuilder multipartBuilder = new MultipartBuilder();
 		multipartBuilder.type(MultipartBuilder.FORM);
@@ -150,22 +152,12 @@ public class HttpUtil {
 		bindMulitPartFile(multipartBuilder, discriptions);
 		Request request = requestBuilder.url(url)
 				.post(multipartBuilder.build()).build();
-		Response response = null;
-		try {
-			response = client.newCall(request).execute();
-			if (response.isSuccessful()) {
-				return response.body().string();
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		return null;
+		client.newCall(request).enqueue(callBack);
 	}
-	
-	
+
 	public static String uploadMultiFileWithPrograss(String url,
 			Map<String, String> params, List<FileDiscription> discriptions,
-			Map<String, String> header){
+			Map<String, String> header) {
 		Request.Builder requestBuilder = new Request.Builder();
 		MultipartBuilder multipartBuilder = new MultipartBuilder();
 		multipartBuilder.type(MultipartBuilder.FORM);
@@ -190,7 +182,7 @@ public class HttpUtil {
 	 * 文件下载
 	 */
 	public void downLoad() {
-		
+
 	}
 
 	/**
@@ -227,8 +219,6 @@ public class HttpUtil {
 			bindFilePart(multipartBuilder, fileDiscription);
 		}
 	}
-	
-	
 
 	/**
 	 * 绑定文件
@@ -244,7 +234,8 @@ public class HttpUtil {
 				.addFormDataPart(
 						fileDiscription.getKey(),
 						fileDiscription.getFileName(),
-						CustomRequestBody.create(MediaType.parse(fileDiscription.getMediaType()),
+						CustomRequestBody.create(
+								MediaType.parse(fileDiscription.getMediaType()),
 								fileDiscription.getFile()))
 				.type(MultipartBuilder.FORM).build();
 	}
@@ -311,15 +302,14 @@ public class HttpUtil {
 		}
 		return sb.subSequence(0, sb.length() - 1).toString();
 	}
-	
-	
+
 	/**
 	 * 
 	 * 进度监听
 	 *
 	 */
-	public interface PrograssListener{
-		
+	public interface PrograssListener {
+
 		public void onPrograss(int value);
 	}
 }

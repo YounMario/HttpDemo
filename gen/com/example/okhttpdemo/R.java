@@ -1547,15 +1547,69 @@ containing a value of this type.
  Default text size for action bar title.
          */
         public static final int abc_text_size_title_material_toolbar=0x7f070017;
-        /**  Default screen margins, per the Android Design guidelines. 
-
+        /** 
          Example customization of dimensions originally defined in res/values/dimens.xml
          (such as screen margins) for screens with more than 820dp of available width. This
          would include 7" and 10" devices in landscape (~960dp and ~1280dp respectively).
     
          */
-        public static final int activity_horizontal_margin=0x7f070030;
-        public static final int activity_vertical_margin=0x7f070031;
+        public static final int activity_horizontal_margin=0x7f0700aa;
+        /**  论坛 
+         */
+        public static final int anim_margin=0x7f0700a9;
+        public static final int bottom_tab_height=0x7f070060;
+        /**  按钮高度 
+         */
+        public static final int btn_height=0x7f07007d;
+        public static final int btn_height_1=0x7f07007e;
+        /**  重发按钮 
+         */
+        public static final int btn_resend=0x7f07008d;
+        public static final int btn_resend_margin=0x7f07008e;
+        public static final int btn_send_margin=0x7f07008a;
+        public static final int btn_send_margin_right=0x7f07008b;
+        public static final int btn_send_msg_w_h=0x7f070089;
+        public static final int btn_speak_h=0x7f07008c;
+        /**  按钮和顶部之间距离 
+         */
+        public static final int btn_top_amrgin=0x7f07007f;
+        /**  聊天历史界面item高度 
+ 昵称，最后一条信息的文本框父容器高度 
+         */
+        public static final int chat_historty_item_text_c_h=0x7f070091;
+        /**  聊天页面头像与左右的边距 
+         */
+        public static final int chat_margin=0x7f0700a6;
+        public static final int chat_margin1=0x7f0700a7;
+        /**  聊天界面底部菜单高度 
+         */
+        public static final int chat_page_bottom_hight=0x7f070090;
+        /**  报修图标大小 
+         */
+        public static final int chat_repaire_h_w=0x7f070094;
+        public static final int chat_send_pb_w_h=0x7f07009b;
+        /**  未读消息小红点宽高 
+         */
+        public static final int chat_unread_icon_height=0x7f070093;
+        /**  用户列表页面 
+ 用户列表字母索引高度 
+         */
+        public static final int chat_user_list_index_h=0x7f070096;
+        /**  性别背景框 高度 
+         */
+        public static final int chat_user_list_s_b_h=0x7f070098;
+        /**  性别背景框 宽度 
+         */
+        public static final int chat_user_list_s_b_w=0x7f070099;
+        /**  性别图标宽高 
+         */
+        public static final int chat_user_list_s_w_h=0x7f07009a;
+        public static final int chat_user_search_h=0x7f070097;
+        public static final int circle_btn_margin=0x7f070088;
+        public static final int circle_btn_s_w_h=0x7f070087;
+        /**  底部菜单圆形按钮大小 
+         */
+        public static final int circle_btn_w_h=0x7f070086;
         /**  The platform's desired fixed height for a dialog along the major axis
          (the screen is in portrait). This may be either a fraction or a dimension.
  The platform's desired fixed height for a dialog along the major axis
@@ -1590,6 +1644,161 @@ containing a value of this type.
         public static final int dialog_fixed_width_minor=0x7f07000d;
         public static final int disabled_alpha_material_dark=0x7f070001;
         public static final int disabled_alpha_material_light=0x7f070000;
+        /**  输入框高度 
+         */
+        public static final int eidt_height=0x7f070079;
+        /**  搜索输入框高度 
+         */
+        public static final int eidt_height_search=0x7f07007a;
+        /**  聊天界面头像与气泡的距离 
+         */
+        public static final int head_msg_back_w=0x7f070085;
+        /**  主页网格块 高度 
+         */
+        public static final int home_grid_block_height=0x7f070062;
+        /**  通用 
+ 主页天气显示间距 
+         */
+        public static final int home_weather_top_margin=0x7f070061;
+        /**  聊天模块的 
+         */
+        public static final int icon_height=0x7f070092;
+        /**  论坛 
+         */
+        public static final int image_height=0x7f070095;
+        /**  菜单高度 
+         */
+        public static final int item_menu_height=0x7f070078;
+        /**  表单高度 
+         */
+        public static final int item_table_height=0x7f070073;
+        public static final int item_table_height1=0x7f070075;
+        public static final int item_table_height2=0x7f070077;
+        public static final int item_table_height3=0x7f070076;
+        public static final int item_table_height4=0x7f070074;
+        /**  页面左边缘 
+         */
+        public static final int left_margin=0x7f070063;
+        public static final int left_margin1=0x7f070065;
+        /**  聊天界面相关 
+ 聊天界面头像宽高 
+         */
+        public static final int margin_chat_activity=0x7f070080;
+        /**  菜单字体 
+         */
+        public static final int menu_text_size=0x7f070068;
+        /**  菜单宽度 
+         */
+        public static final int menu_width=0x7f070069;
+        /**  聊天界面 麦克风相关 
+         */
+        public static final int mic_bacg_w_h=0x7f070081;
+        public static final int mic_cancel_margin=0x7f070084;
+        public static final int mic_txt_w=0x7f070083;
+        public static final int mic_w_h=0x7f070082;
+        /**  聊天气泡之间的距离 
+         */
+        public static final int msg_back_margin=0x7f07008f;
+        public static final int px_1=0x7f070032;
+        /**  通用 
+         */
+        public static final int px_10=0x7f070030;
+        public static final int px_100=0x7f07004a;
+        public static final int px_110=0x7f070057;
+        public static final int px_120=0x7f07004b;
+        public static final int px_130=0x7f070058;
+        public static final int px_140=0x7f07004c;
+        public static final int px_150=0x7f070059;
+        public static final int px_16=0x7f070039;
+        public static final int px_160=0x7f070051;
+        public static final int px_170=0x7f070056;
+        public static final int px_18=0x7f070034;
+        public static final int px_180=0x7f07004d;
+        public static final int px_2=0x7f070033;
+        public static final int px_20=0x7f070035;
+        public static final int px_210=0x7f07005a;
+        public static final int px_22=0x7f070036;
+        public static final int px_220=0x7f07004e;
+        public static final int px_24=0x7f07003d;
+        public static final int px_25=0x7f070037;
+        public static final int px_26=0x7f070038;
+        public static final int px_270=0x7f07004f;
+        public static final int px_28=0x7f07003e;
+        public static final int px_280=0x7f070050;
+        public static final int px_30=0x7f07003a;
+        public static final int px_300=0x7f070054;
+        public static final int px_32=0x7f07003b;
+        public static final int px_320=0x7f070055;
+        public static final int px_34=0x7f07003f;
+        public static final int px_340=0x7f07005b;
+        public static final int px_36=0x7f07003c;
+        public static final int px_360=0x7f07005c;
+        public static final int px_40=0x7f070040;
+        public static final int px_45=0x7f070041;
+        public static final int px_460=0x7f07005d;
+        public static final int px_48=0x7f070042;
+        public static final int px_5=0x7f070031;
+        public static final int px_50=0x7f070043;
+        public static final int px_560=0x7f07005e;
+        public static final int px_60=0x7f070044;
+        public static final int px_68=0x7f070045;
+        public static final int px_70=0x7f070052;
+        public static final int px_76=0x7f070053;
+        public static final int px_80=0x7f070046;
+        public static final int px_88=0x7f070047;
+        public static final int px_90=0x7f070048;
+        public static final int px_96=0x7f070049;
+        /**  页面右边缘 
+         */
+        public static final int right_margin=0x7f070064;
+        public static final int right_margin1=0x7f070066;
+        /**  聊天相关 
+ 附近商店页面 
+         */
+        public static final int sheller_page_top_h=0x7f0700a8;
+        /**  表单中的线高度 
+         */
+        public static final int table_line_height=0x7f07007b;
+        public static final int text_body=0x7f07006b;
+        /**  正文字体大号 
+         */
+        public static final int text_body_big=0x7f07006a;
+        public static final int text_body_ms=0x7f07006e;
+        public static final int text_body_small=0x7f07006c;
+        public static final int text_body_small_buy=0x7f07006d;
+        /**  标题 
+         */
+        public static final int text_title=0x7f070072;
+        /**  页面标题字体 
+         */
+        public static final int text_title_20=0x7f070067;
+        /**  ******************2.0  END****************************** 
+         */
+        public static final int top_bar_height=0x7f07005f;
+        /**  顶部间距 
+         */
+        public static final int top_item_margin=0x7f07007c;
+        /**  消息红点距离 
+         */
+        public static final int tvmsg_margin0=0x7f07006f;
+        public static final int tvmsg_margin1=0x7f070070;
+        public static final int tvmsg_margin2=0x7f070071;
+        public static final int wuye_icon=0x7f0700a3;
+        public static final int wuye_top_back_img_margin_bottom=0x7f0700a1;
+        public static final int wuye_top_back_img_margin_top=0x7f0700a0;
+        public static final int wuye_top_bar_back_icon_h=0x7f07009e;
+        public static final int wuye_top_bar_back_icon_w=0x7f07009d;
+        public static final int wuye_top_margin=0x7f07009f;
+        public static final int wuye_top_txt_max=0x7f0700a2;
+        /**  物业标题左半边 透明宽度 
+         */
+        public static final int wuye_topbar_l_p_w=0x7f0700a4;
+        /**  物业标题左半边 透明宽度 
+         */
+        public static final int wuye_topbar_r_p_w=0x7f0700a5;
+        /**  聊天界面底部菜单高度 
+         */
+        public static final int wuyue_top_bar=0x7f07009c;
     }
     public static final class drawable {
         public static final int abc_ab_share_pack_mtrl_alpha=0x7f020000;
@@ -1663,10 +1872,12 @@ containing a value of this type.
         public static final int action_mode_bar=0x7f09002e;
         public static final int action_mode_bar_stub=0x7f09002d;
         public static final int action_mode_close_button=0x7f090020;
-        public static final int action_settings=0x7f09003f;
+        public static final int action_settings=0x7f090044;
         public static final int activity_chooser_view_content=0x7f090021;
         public static final int always=0x7f090014;
         public static final int beginning=0x7f09001b;
+        public static final int button1=0x7f090040;
+        public static final int button2=0x7f090041;
         public static final int checkbox=0x7f090029;
         public static final int collapseActionView=0x7f090015;
         public static final int decor_content_parent=0x7f09002f;
@@ -1683,6 +1894,7 @@ containing a value of this type.
         public static final int icon=0x7f090026;
         public static final int ifRoom=0x7f090016;
         public static final int image=0x7f090023;
+        public static final int imageView1=0x7f090042;
         public static final int listMode=0x7f09000a;
         public static final int list_item=0x7f090025;
         public static final int middle=0x7f09001d;
@@ -1709,7 +1921,9 @@ containing a value of this type.
         public static final int split_action_bar=0x7f090004;
         public static final int submit_area=0x7f09003c;
         public static final int tabMode=0x7f09000c;
+        public static final int textView1=0x7f09003f;
         public static final int title=0x7f090027;
+        public static final int txt_file=0x7f090043;
         public static final int up=0x7f090001;
         public static final int useLogo=0x7f090013;
         public static final int withText=0x7f090018;
