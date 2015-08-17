@@ -1,24 +1,19 @@
 package com.younchen.utils.http;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import android.os.Handler;
+import junit.framework.Assert;
 
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
+import com.younchen.utils.http.handler.HttpRequestHandler;
 import com.younchen.utils.http.thread.Excutor;
-
-import android.os.Message;
 
 /**
  * 异步请求类
  * 
  * @author longquan
+ * @param <T>
  *
  */
 public class AsyncHttpRequest {
@@ -30,60 +25,45 @@ public class AsyncHttpRequest {
 	private HashMap<String, String> header;
 	private HashMap<String, String> params;
 	private Excutor excutor;
-	private RequestCallBack callBack;
 
-	private HttpHandler httpHandler;
 	private String method;
 	private List<FileDiscription> flist;
+	private Builder builder;
 
 	private AsyncHttpRequest() {
-		excutor = new Excutor();
+		excutor = Excutor.getInstance();
 	}
 
-	private AsyncHttpRequest(String url, HashMap<String, String> header,
-			HashMap<String, String> params, String method,
-			RequestCallBack callBack, List<FileDiscription> flist) {
+	private AsyncHttpRequest(Builder builder) {
 		this();
-		this.url = url;
-		this.header = header;
-		this.params = params;
-		this.callBack = callBack;
-		this.method = method;
-		this.flist = flist;
-		if (callBack != null)
-			httpHandler = new HttpHandler(this.callBack);
-		checkMethod();
+		this.url = builder.url;
+		this.header = builder.header;
+		this.params = builder.params;
+		this.method = builder.method;
+		this.flist = builder.flist;
+		this.builder = builder;
+		cheack(builder);
 	}
 
-	/**
-	 * 若没有设置method 默认为Get
-	 */
-	private void checkMethod() {
+	private void cheack(Builder builder) {
+		// TODO Auto-generated method stub
 		if (method == null)
 			this.method = GET;
+		if (builder.handler == null) {
+			throw new IllegalArgumentException("http callback must not be null");
+		}
+		Assert.assertNotNull(builder.url);
+
 	}
 
 	public void execute() {
 		// excutor.execute(new HandlerRunnable(new ));
 		excutor.execute(new Runnable() {
-
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				HttpUtil.request(url, params, header, flist, new Callback() {
-					@Override
-					public void onResponse(Response arg0) throws IOException {
-						// TODO Auto-generated method stub
-						String str = arg0.body().string();
-						httpHandler.onSuccess(str);
-					}
-
-					@Override
-					public void onFailure(Request arg0, IOException arg1) {
-						// TODO Auto-generated method stub
-						httpHandler.onFail();
-					}
-				}, method);
+				HttpUtil.request(url, params, header, flist, builder.handler,
+						method);
 			}
 		});
 	}
@@ -95,7 +75,7 @@ public class AsyncHttpRequest {
 		private HashMap<String, String> params;
 		private List<FileDiscription> flist;
 		private String method;
-		private RequestCallBack callBack;
+		private HttpRequestHandler handler;
 
 		public Builder() {
 			header = new HashMap<String, String>();
@@ -128,62 +108,23 @@ public class AsyncHttpRequest {
 			return this;
 		}
 
-		public Builder callBack(RequestCallBack callBack) {
-			this.callBack = callBack;
+		public AsyncHttpRequest build() {
+			return new AsyncHttpRequest(this);
+		}
+
+		public Builder callBack(HttpRequestHandler.HttpCallBack callBack) {
+			// TODO Auto-generated method stub
+			this.handler = new HttpRequestHandler(callBack);
 			return this;
 		}
-
-		public AsyncHttpRequest build() {
-			return new AsyncHttpRequest(url, header, params, method, callBack,
-					flist);
+		
+		/**
+		 * 获取builder
+		 * @return
+		 */
+		public static Builder getBuilder(){
+			return new Builder();
 		}
-
 	}
 
-	public interface RequestCallBack {
-
-		public void onSuccess(String result);
-
-		public void onFail();
-
-	}
-
-	public static class HttpHandler extends Handler {
-
-		private int SUCCESS = 0x01;
-		private int FAIL = 0x02;
-
-		private RequestCallBack callBack;
-
-		public HttpHandler(RequestCallBack callBack) {
-			// TODO Auto-generated constructor stub
-			this.callBack = callBack;
-		}
-
-		@Override
-		public void handleMessage(Message msg) {
-			// TODO Auto-generated method stub
-			if (msg.what == SUCCESS) {
-				String result = (String) msg.obj;
-				callBack.onSuccess(result);
-			} else if (msg.what == FAIL) {
-				callBack.onFail();
-			}
-
-		}
-
-		public void onSuccess(String result) {
-			Message msg = new Message();
-			msg.obj = result;
-			msg.what = SUCCESS;
-			this.sendMessage(msg);
-		}
-
-		public void onFail() {
-			Message msg = new Message();
-			msg.what = FAIL;
-			this.sendEmptyMessage(FAIL);
-		}
-
-	}
 }

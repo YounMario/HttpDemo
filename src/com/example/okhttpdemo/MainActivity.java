@@ -8,21 +8,23 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.younchen.utils.EncryptUtil;
 import com.younchen.utils.FileUtil;
 import com.younchen.utils.ToastUtil;
 import com.younchen.utils.http.AsyncHttpRequest;
-import com.younchen.utils.http.AsyncHttpRequest.Builder;
-import com.younchen.utils.http.AsyncHttpRequest.RequestCallBack;
+import com.younchen.utils.http.CustomRequestBody.UpLoadListener;
 import com.younchen.utils.http.FileDiscription;
-import com.younchen.utils.http.HttpUtil;
+import com.younchen.utils.http.handler.HttpRequestHandler.HttpCallBack;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -31,35 +33,18 @@ public class MainActivity extends ActionBarActivity {
 	private final int REQUEST_CODE_CAMERA = 202;
 
 	private TextView textView;
+	private ProgressBar progressBar;
 
+	private FileUploadListener fileUploadListener;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		textView = (TextView) findViewById(R.id.txt_file);
-		init();
-	}
-
-	private void init() {
-		// TODO Auto-generated method stub
-
-		AsyncHttpRequest.Builder builder = new AsyncHttpRequest.Builder();
-		builder.addParams("hehe", "haha").url("http://www.baidu.com")
-				.method(AsyncHttpRequest.GET).callBack(new RequestCallBack() {
-
-					@Override
-					public void onSuccess(String result) {
-						// TODO Auto-generated method stub
-						textView.setText(result);
-					}
-
-					@Override
-					public void onFail() {
-						// TODO Auto-generated method stub
-
-					}
-				}).build().execute();
+		progressBar = (ProgressBar) findViewById(R.id.progressBar1);
+		fileUploadListener = new FileUploadListener();
+		// prograssTest();
 	}
 
 	@Override
@@ -129,10 +114,6 @@ public class MainActivity extends ActionBarActivity {
 						sendPicByUri(selectedImage);
 					}
 				}
-			} else if (requestCode == REQUEST_CODE_CAMERA) { // 发送照片
-
-				if (cameraFile != null && cameraFile.exists())
-					uploadImage(cameraFile.getAbsolutePath());
 			}
 
 		} catch (Exception ex) {
@@ -173,42 +154,96 @@ public class MainActivity extends ActionBarActivity {
 
 	}
 
-	/**
-	 * 发送图片
-	 * 
-	 * @param filePath
-	 */
-	private void uploadImage(final String filePath) {
-
-	}
-
-	public void upload(View v) {
-		if (!TextUtils.isEmpty(textView.getText())) {
-			File file = new File(textView.getText().toString());
-			final String url = "http://192.168.1.41:8080/titan/Upload/file";
-			
-			
-			AsyncHttpRequest.Builder builder=new AsyncHttpRequest.Builder();
-			builder.addFile(new FileDiscription(file)).method(AsyncHttpRequest.POST).url(url).callBack(new RequestCallBack() {
-				
-				@Override
-				public void onSuccess(String result) {
-					// TODO Auto-generated method stub
-					textView.setText(result);
-				}
-				
-				@Override
-				public void onFail() {
-					// TODO Auto-generated method stub
-					
-				}
-			}).build().execute();
-		 
-		}
-	}
-
 	public void selectPic(View v) {
 		selectPicFromLocal();
+	}
+
+	/**
+	 * upload事例
+	 * 
+	 * @param v
+	 */
+	public void upload(View v) {
+		post();
+//		if (!TextUtils.isEmpty(textView.getText())) {
+//			File file = new File(textView.getText().toString());
+//			final String url = "http://192.168.1.41:8080/titan/Upload/file";
+//
+//			AsyncHttpRequest.Builder
+//					.getBuilder()
+//					.addFile(
+//							new FileDiscription(file)
+//									.setUploadPrograssListener(fileUploadListener))
+//					.method(AsyncHttpRequest.POST).url(url)
+//					.callBack(new HttpCallBack() {
+//
+//						@Override
+//						public void onSuccess(String body) {
+//							// TODO Auto-generated method stub
+//							textView.setText(body);
+//						}
+//
+//						@Override
+//						public void onFail(String message) {
+//							// TODO Auto-generated method stub
+//
+//						}
+//					}).build().execute();
+//		}
+	}
+
+	/**
+	 * get 请求
+	 */
+	private void getSample() {
+		AsyncHttpRequest.Builder.getBuilder().addParams("hehe", "haha")
+				.addHeader("value", "hehehe").addHeader("value1", "heheh")
+				.url("http://www.baidu.com").method(AsyncHttpRequest.GET)
+				.callBack(new HttpCallBack() {
+
+					@Override
+					public void onSuccess(String body) {
+						// TODO Auto-generated method stub
+						textView.setText(body);
+					}
+
+					@Override
+					public void onFail(String message) {
+						// TODO Auto-generated method stub
+
+					}
+				}).build().execute();
+	}
+
+	private void post() {
+		AsyncHttpRequest.Builder.getBuilder()
+				.addParams("email", "KTVyin@163.com")
+				.addParams("pwd", "2D7DFB84C1FCD0DF718BFE1E802816B1D4DC8D66")
+				.url("http://www.oschina.net/action/user/hash_login").method(AsyncHttpRequest.POST)
+				.callBack(new HttpCallBack() {
+
+					@Override
+					public void onSuccess(String body) {
+						// TODO Auto-generated method stub
+						textView.setText(body);
+					}
+
+					@Override
+					public void onFail(String message) {
+						// TODO Auto-generated method stub
+
+					}
+				}).build().execute();
+	}
+
+	class FileUploadListener implements UpLoadListener {
+
+		@Override
+		public void onPrograss(int prograss) {
+			// TODO Auto-generated method stub
+			progressBar.setProgress(prograss);
+		}
+
 	}
 
 }

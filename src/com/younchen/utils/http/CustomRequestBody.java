@@ -13,61 +13,61 @@ import com.squareup.okhttp.RequestBody;
 
 public class CustomRequestBody extends RequestBody {
 
+	protected RequestBody delegate;
+	protected UpLoadListener listener;
 
-    protected RequestBody delegate;
-    protected Listener listener;
+	protected CountingSink countingSink;
 
-    protected CountingSink countingSink;
+	public CustomRequestBody(RequestBody delegate, UpLoadListener listener) {
+		this.delegate = delegate;
+		this.listener = listener;
+	}
 
-    public CustomRequestBody(RequestBody delegate, Listener listener) {
-        this.delegate = delegate;
-        this.listener = listener;
-    }
+	@Override
+	public MediaType contentType() {
+		return delegate.contentType();
+	}
 
-    @Override
-    public MediaType contentType() {
-        return delegate.contentType();
-    }
+	@Override
+	public long contentLength() throws IOException {
+		return delegate.contentLength();
+	}
 
-    @Override
-    public long contentLength() throws IOException {
-        return delegate.contentLength();
-    }
+	@Override
+	public void writeTo(BufferedSink sink) throws IOException {
+		BufferedSink bufferedSink;
 
-    @Override
-    public void writeTo(BufferedSink sink) throws IOException {
-        BufferedSink bufferedSink;
+		countingSink = new CountingSink(sink);
+		bufferedSink = Okio.buffer(countingSink);
+		delegate.writeTo(bufferedSink);
+		bufferedSink.flush();
+	}
 
-        countingSink = new CountingSink(sink);
-        bufferedSink = Okio.buffer(countingSink);
+	protected final class CountingSink extends ForwardingSink {
 
-        delegate.writeTo(bufferedSink);
+		private long bytesWritten = 0;
 
-        bufferedSink.flush();
-    }
+		public CountingSink(Sink delegate) {
+			super(delegate);
+		}
 
-    protected final class CountingSink extends ForwardingSink {
+		@Override
+		public void write(Buffer source, long byteCount) throws IOException {
+			super.write(source, byteCount);
+			bytesWritten += byteCount;
+			int prograss = (int) (bytesWritten*100 / contentLength());
+			if (listener != null)
+				listener.onPrograss(prograss);
+		}
+	}
 
-        private long bytesWritten = 0;
-
-        public CountingSink(Sink delegate) {
-            super(delegate);
-        }
-
-        @Override
-        public void write(Buffer source, long byteCount) throws IOException {
-            super.write(source, byteCount);
-
-            bytesWritten += byteCount;
-            listener.onRequestProgress(bytesWritten, contentLength());
-        }
-
-    }
-
-    public static interface Listener {
-
-        public void onRequestProgress(long bytesWritten, long contentLength);
-
-    }
+	/**
+	 * 
+	 * @author 上传监听事件
+	 *
+	 */
+	public static interface UpLoadListener {
+		public void onPrograss(int prograss);
+	}
 
 }

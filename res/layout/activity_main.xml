@@ -48,4 +48,14 @@
         android:layout_marginBottom="14dp"
         android:layout_toRightOf="@+id/button1" />
 
+    <ProgressBar
+        android:id="@+id/progressBar1"
+        
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button1"
+        android:layout_marginTop="57dp"
+      />
+
 </RelativeLayout>

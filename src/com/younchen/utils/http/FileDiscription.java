@@ -2,6 +2,9 @@ package com.younchen.utils.http;
 
 import java.io.File;
 
+import com.younchen.utils.http.CustomRequestBody.UpLoadListener;
+
+
 /**
  * 文件上传功能，的文件描述实体
  * 
@@ -16,13 +19,15 @@ public class FileDiscription {
 	private String fileName;
 	private String key;
 
+	private UpLoadListener uploadListener;
+
 	public FileDiscription(String fileName, String mediaType, File file,
 			String charSet, String key) {
 		if (file == null) {
 			throw new IllegalArgumentException("file is null");
 		}
-		if(key==null){
-			key="file";
+		if (key == null) {
+			key = "file";
 		}
 		this.file = file;
 		this.mediaType = mediaType;
@@ -92,4 +97,14 @@ public class FileDiscription {
 	public void setKey(String key) {
 		this.key = key;
 	}
+
+	public FileDiscription setUploadPrograssListener(UpLoadListener listener) {
+		this.uploadListener = listener;
+		return this;
+	}
+
+	public UpLoadListener getUploadPrograssListener() {
+		return uploadListener;
+	}
+
 }

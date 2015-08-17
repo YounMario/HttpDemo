@@ -10,7 +10,9 @@ import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.MultipartBuilder;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
+import com.younchen.utils.http.CustomRequestBody.UpLoadListener;
 
 /**
  * see also https://github.com/square/okhttp/wiki/Recipes
@@ -21,8 +23,6 @@ import com.squareup.okhttp.Response;
 public class HttpUtil {
 
 	private final static OkHttpClient client = new OkHttpClient();
-
-	 
 
 	public static void request(String url, Map<String, String> params,
 			Map<String, String> header, List<FileDiscription> flist,
@@ -125,7 +125,7 @@ public class HttpUtil {
 		multipartBuilder.type(MultipartBuilder.FORM);
 		bindHeader(requestBuilder, header);
 		bindMulitPartParam(multipartBuilder, params);
-		bindFilePart(multipartBuilder, discription);
+		bindFilePart(multipartBuilder, discription, null);
 		Request request = requestBuilder.url(url)
 				.post(multipartBuilder.build()).build();
 		client.newCall(request).enqueue(callBack);
@@ -216,7 +216,8 @@ public class HttpUtil {
 		if (fileList == null)
 			return;
 		for (FileDiscription fileDiscription : fileList) {
-			bindFilePart(multipartBuilder, fileDiscription);
+			bindFilePart(multipartBuilder, fileDiscription,
+					fileDiscription.getUploadPrograssListener());
 		}
 	}
 
@@ -228,15 +229,16 @@ public class HttpUtil {
 	 * @param file
 	 */
 	private static void bindFilePart(MultipartBuilder multipartBuilder,
-			FileDiscription fileDiscription) {
+			FileDiscription fileDiscription,UpLoadListener listener) {
 		// TODO Auto-generated method stub
 		multipartBuilder
 				.addFormDataPart(
 						fileDiscription.getKey(),
 						fileDiscription.getFileName(),
-						CustomRequestBody.create(
-								MediaType.parse(fileDiscription.getMediaType()),
-								fileDiscription.getFile()))
+						new CustomRequestBody(
+								RequestBody.create(MediaType
+										.parse(fileDiscription.getMediaType()),
+										fileDiscription.getFile()), listener))
 				.type(MultipartBuilder.FORM).build();
 	}
 
@@ -303,13 +305,5 @@ public class HttpUtil {
 		return sb.subSequence(0, sb.length() - 1).toString();
 	}
 
-	/**
-	 * 
-	 * 进度监听
-	 *
-	 */
-	public interface PrograssListener {
 
-		public void onPrograss(int value);
-	}
 }
