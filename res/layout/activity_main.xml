@@ -58,4 +58,14 @@
         android:layout_marginTop="57dp"
       />
 
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/button2"
+        android:layout_marginLeft="24dp"
+        android:layout_toRightOf="@+id/button2"
+        android:text="cancel"
+        android:onClick="cancel" />
+
 </RelativeLayout>

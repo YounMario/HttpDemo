@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
@@ -18,12 +17,14 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.younchen.utils.EncryptUtil;
+import com.squareup.okhttp.Request;
 import com.younchen.utils.FileUtil;
 import com.younchen.utils.ToastUtil;
-import com.younchen.utils.http.AsyncHttpRequest;
 import com.younchen.utils.http.CustomRequestBody.UpLoadListener;
 import com.younchen.utils.http.FileDiscription;
+import com.younchen.utils.http.HttpRequestBuilder;
+import com.younchen.utils.http.HttpRequestBuilder.HttpMethod;
+import com.younchen.utils.http.handler.HttpRequestHandler;
 import com.younchen.utils.http.handler.HttpRequestHandler.HttpCallBack;
 
 public class MainActivity extends ActionBarActivity {
@@ -36,6 +37,11 @@ public class MainActivity extends ActionBarActivity {
 	private ProgressBar progressBar;
 
 	private FileUploadListener fileUploadListener;
+	// private AsyncHttpRequest uploadRequest;
+
+	private HttpRequestHandler uploadHandler;
+	private HttpRequestHandler getHandler;
+	private HttpRequestHandler postHandler;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +50,6 @@ public class MainActivity extends ActionBarActivity {
 		textView = (TextView) findViewById(R.id.txt_file);
 		progressBar = (ProgressBar) findViewById(R.id.progressBar1);
 		fileUploadListener = new FileUploadListener();
-		// prograssTest();
 	}
 
 	@Override
@@ -164,76 +169,103 @@ public class MainActivity extends ActionBarActivity {
 	 * @param v
 	 */
 	public void upload(View v) {
-		post();
-//		if (!TextUtils.isEmpty(textView.getText())) {
-//			File file = new File(textView.getText().toString());
-//			final String url = "http://192.168.1.41:8080/titan/Upload/file";
-//
-//			AsyncHttpRequest.Builder
-//					.getBuilder()
-//					.addFile(
-//							new FileDiscription(file)
-//									.setUploadPrograssListener(fileUploadListener))
-//					.method(AsyncHttpRequest.POST).url(url)
-//					.callBack(new HttpCallBack() {
-//
-//						@Override
-//						public void onSuccess(String body) {
-//							// TODO Auto-generated method stub
-//							textView.setText(body);
-//						}
-//
-//						@Override
-//						public void onFail(String message) {
-//							// TODO Auto-generated method stub
-//
-//						}
-//					}).build().execute();
-//		}
+		fileUploadSample();
+	}
+
+	public void cancel(View v) {
+
 	}
 
 	/**
 	 * get 请求
 	 */
 	private void getSample() {
-		AsyncHttpRequest.Builder.getBuilder().addParams("hehe", "haha")
-				.addHeader("value", "hehehe").addHeader("value1", "heheh")
-				.url("http://www.baidu.com").method(AsyncHttpRequest.GET)
-				.callBack(new HttpCallBack() {
 
-					@Override
-					public void onSuccess(String body) {
-						// TODO Auto-generated method stub
-						textView.setText(body);
-					}
+		Request request = new HttpRequestBuilder().url("http://www.baidu.com")
+				.addHeader("cookie", "df").addParams("key", "value")
+				.method(HttpMethod.GET).build();
 
-					@Override
-					public void onFail(String message) {
-						// TODO Auto-generated method stub
+		getHandler = new HttpRequestHandler(request, new HttpCallBack() {
 
-					}
-				}).build().execute();
+			@Override
+			public void onSuccess(String body) {
+				// TODO Auto-generated method stub
+				textView.setText(body);
+			}
+
+			@Override
+			public void onFail(String message) {
+				// TODO Auto-generated method stub
+
+			}
+
+		});
+		getHandler.execute();
+
 	}
 
-	private void post() {
-		AsyncHttpRequest.Builder.getBuilder()
-				.addParams("email", "KTVyin@163.com")
+	/**
+	 * post 请求
+	 */
+	private void postSample() {
+
+		Request request = new HttpRequestBuilder()
+				.url("http://www.oschina.net/action/user/hash_login")
+				.addHeader("cookie", "df").addParams("email", "KTVyin@163.com")
 				.addParams("pwd", "2D7DFB84C1FCD0DF718BFE1E802816B1D4DC8D66")
-				.url("http://www.oschina.net/action/user/hash_login").method(AsyncHttpRequest.POST)
-				.callBack(new HttpCallBack() {
+				.method(HttpMethod.POST).build();
 
-					@Override
-					public void onSuccess(String body) {
-						// TODO Auto-generated method stub
-						textView.setText(body);
-					}
+		postHandler = new HttpRequestHandler(request, new HttpCallBack() {
 
-					@Override
-					public void onFail(String message) {
-						// TODO Auto-generated method stub
+			@Override
+			public void onSuccess(String body) {
+				// TODO Auto-generated method stub
+				textView.setText(body);
+			}
 
-					}
-				}).build().execute();
+			@Override
+			public void onFail(String message) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+
+		postHandler.execute();
+	}
+
+	/**
+	 * 文件上传
+	 */
+	private void fileUploadSample() {
+		if (!TextUtils.isEmpty(textView.getText())) {
+			File file = new File(textView.getText().toString());
+			final String url = "http://192.168.1.41:8080/titan/Upload/file";
+
+			Request request = new HttpRequestBuilder()
+					.url(url)
+					.method(HttpMethod.POST)
+					.addFile(
+							new FileDiscription(file)
+									.setUploadPrograssListener(fileUploadListener))
+					.build();
+
+			uploadHandler = new HttpRequestHandler(request, new HttpCallBack() {
+
+				@Override
+				public void onSuccess(String body) {
+					// TODO Auto-generated method stub
+					textView.setText(body);
+				}
+
+				@Override
+				public void onFail(String message) {
+					// TODO Auto-generated method stub
+
+				}
+			});
+			uploadHandler.execute();
+
+		}
 	}
 
 	class FileUploadListener implements UpLoadListener {

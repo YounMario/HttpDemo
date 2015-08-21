@@ -5,19 +5,38 @@ import java.io.IOException;
 import android.os.Handler;
 import android.os.Message;
 
+import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+import com.younchen.utils.http.HttpUtil;
 
+/**
+ * 
+ * @author longquan
+ *
+ */
 public class HttpRequestHandler extends Handler implements Callback {
 
 	private int SUCCESS = 0x01;
 	private int FAIL = 0x02;
 	private HttpCallBack callBack;
+	private Request request;
+	private Call call;
 
-	public HttpRequestHandler(HttpCallBack callBack) {
+	public HttpRequestHandler(Request request, HttpCallBack callBack) {
 		// TODO Auto-generated constructor stub
 		this.callBack = callBack;
+		this.request = request;
+	}
+
+	public void execute() {
+		call = HttpUtil.sendRequst(request, this);
+	}
+
+	public void cancel() {
+		if (call != null)
+			call.cancel();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -52,7 +71,12 @@ public class HttpRequestHandler extends Handler implements Callback {
 	public void onResponse(Response arg0) throws IOException {
 		// TODO Auto-generated method stub
 		try {
-			sendSuccess(arg0.body().string());
+			if (arg0.code() == 200) {
+				arg0.message();
+				sendSuccess(arg0.body().string());
+			} else {
+				sendFail(arg0.message());
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
