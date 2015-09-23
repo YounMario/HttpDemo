@@ -19,8 +19,10 @@ public class HttpRequestBuilder {
 	private HttpMethod method;
 	private String url;
 	private boolean hasFile;
+	private boolean isDownLoad;
 	private List<FileDiscription> fileList;
-	
+	private String downLoadDir;
+	private String downLoadFileName;
 
 	public HttpRequestBuilder() {
 		params = new HashMap<String, String>();
@@ -70,7 +72,20 @@ public class HttpRequestBuilder {
 		params.put(key, value);
 		return this;
 	}
-	
+
+	/**
+	 * 下载文件设置， 请求方法需要设置为get.也支持添加httpHeader.
+	 * 
+	 * @param dir
+	 * @param fileName
+	 * @return
+	 */
+	public HttpRequestBuilder downLoadPath(String dir, String fileName) {
+		this.isDownLoad = true;
+		this.downLoadDir = dir;
+		this.downLoadFileName = fileName;
+		return this;
+	}
 
 	/**
 	 * 添加http方法
@@ -83,39 +98,49 @@ public class HttpRequestBuilder {
 		return this;
 	}
 
-	public Request build() {
+	public HttpRequest build() {
+		HttpRequest request = new HttpRequest();
 		if (this.url == null)
 			throw new IllegalArgumentException("url is null");
 		if (this.method == null)
 			this.method = HttpMethod.GET;
-
 		if (this.method.name().equals(HttpMethod.GET.name())) {
-			this.url = bindGetRequestParam(url, params);
+			BindGetRequet(request);
 		} else if (this.method.equals((HttpMethod.POST))) {
-			if (!hasFile) {
-				bindPostRequestPrams(requestBuilder, params);
-			} else {
-				MultipartBuilder multipartBuilder = new MultipartBuilder();
-				multipartBuilder.type(MultipartBuilder.FORM);
-				for (FileDiscription file : fileList) {
-					bindFilePart(multipartBuilder, file);
-				}
-				bindMulitPartParam(multipartBuilder, params);
-				requestBuilder.post(multipartBuilder.build());
-			}
+			BindPostRequest();
 		}
-		return requestBuilder.url(url).build();
+		request.setRequest(requestBuilder.url(url).build());
+		return request;
+	}
+
+	private void BindGetRequet(HttpRequest request) {
+		// TODO Auto-generated method stub
+		if (isDownLoad) {
+			request.setFileDir(downLoadDir);
+			request.setFileName(downLoadFileName);
+		}
+		this.url = bindGetRequestParam(url, params);
 	}
 
 	/**
-	 * 绑定 多表单参数
-	 * 
-	 * @param multipartBuilder
-	 * @param params
+	 * 处理http请求实体。
 	 */
-	private static void bindMulitPartParam(MultipartBuilder multipartBuilder,
-			Map<String, String> params) {
+	private void BindPostRequest() {
 		// TODO Auto-generated method stub
+		if (!hasFile) {
+			bindPostRequestParams(requestBuilder, params);
+		} else {
+			bindPostFileParams();
+		}
+	}
+
+	private void bindPostFileParams() {
+		// TODO Auto-generated method stub
+		MultipartBuilder multipartBuilder = new MultipartBuilder();
+		multipartBuilder.type(MultipartBuilder.FORM);
+		for (FileDiscription file : fileList) {
+			bindFilePart(multipartBuilder, file);
+		}
 		if (params == null)
 			return;
 		Set<String> set = params.keySet();
@@ -125,7 +150,7 @@ public class HttpRequestBuilder {
 				value = "";
 			multipartBuilder.addFormDataPart(key, value);
 		}
-
+		requestBuilder.post(multipartBuilder.build());
 	}
 
 	/**
@@ -156,7 +181,7 @@ public class HttpRequestBuilder {
 	 * @param builder
 	 * @param params
 	 */
-	private static void bindPostRequestPrams(Request.Builder builder,
+	private void bindPostRequestParams(Request.Builder builder,
 			Map<String, String> params) {
 		FormEncodingBuilder formBodyBuilder = new FormEncodingBuilder();
 		if (params == null || params.size() == 0)
@@ -178,8 +203,7 @@ public class HttpRequestBuilder {
 	 *            参数
 	 * @return
 	 */
-	private static String bindGetRequestParam(String url,
-			Map<String, String> param) {
+	private String bindGetRequestParam(String url, Map<String, String> param) {
 		if (param == null)
 			return url;
 		Set<String> keySet = param.keySet();

@@ -10,15 +10,16 @@ import okio.Sink;
 
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.RequestBody;
+import com.younchen.utils.http.callback.PrograssListner;
 
 public class CustomRequestBody extends RequestBody {
 
 	protected RequestBody delegate;
-	protected UpLoadListener listener;
+	protected PrograssListner listener;
 
 	protected CountingSink countingSink;
 
-	public CustomRequestBody(RequestBody delegate, UpLoadListener listener) {
+	public CustomRequestBody(RequestBody delegate, PrograssListner listener) {
 		this.delegate = delegate;
 		this.listener = listener;
 	}
@@ -37,37 +38,12 @@ public class CustomRequestBody extends RequestBody {
 	public void writeTo(BufferedSink sink) throws IOException {
 		BufferedSink bufferedSink;
 
-		countingSink = new CountingSink(sink);
+		countingSink = new CountingSink(sink,contentLength(),listener);
 		bufferedSink = Okio.buffer(countingSink);
 		delegate.writeTo(bufferedSink);
 		bufferedSink.flush();
 	}
 
-	protected final class CountingSink extends ForwardingSink {
 
-		private long bytesWritten = 0;
-
-		public CountingSink(Sink delegate) {
-			super(delegate);
-		}
-
-		@Override
-		public void write(Buffer source, long byteCount) throws IOException {
-			super.write(source, byteCount);
-			bytesWritten += byteCount;
-			int prograss = (int) (bytesWritten*100 / contentLength());
-			if (listener != null)
-				listener.onPrograss(prograss);
-		}
-	}
-
-	/**
-	 * 
-	 * @author 上传监听事件
-	 *
-	 */
-	public static interface UpLoadListener {
-		public void onPrograss(int prograss);
-	}
 
 }

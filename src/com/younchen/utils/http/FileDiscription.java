@@ -2,7 +2,7 @@ package com.younchen.utils.http;
 
 import java.io.File;
 
-import com.younchen.utils.http.CustomRequestBody.UpLoadListener;
+import com.younchen.utils.http.callback.PrograssListner;
 
 
 /**
@@ -19,7 +19,7 @@ public class FileDiscription {
 	private String fileName;
 	private String key;
 
-	private UpLoadListener uploadListener;
+	private PrograssListner uploadListener;
 
 	public FileDiscription(String fileName, String mediaType, File file,
 			String charSet, String key) {
@@ -98,12 +98,12 @@ public class FileDiscription {
 		this.key = key;
 	}
 
-	public FileDiscription setUploadPrograssListener(UpLoadListener listener) {
+	public FileDiscription setUploadPrograssListener(PrograssListner listener) {
 		this.uploadListener = listener;
 		return this;
 	}
 
-	public UpLoadListener getUploadPrograssListener() {
+	public PrograssListner getUploadPrograssListener() {
 		return uploadListener;
 	}
 
